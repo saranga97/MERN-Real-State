@@ -7,7 +7,9 @@ import authRouter from "./routes/auth.route.js";
 dotenv.config();
 
 mongoose
-  .connect("mongodb+srv://saranga:saranga@mern-realstate.r6v7v44.mongodb.net/mern-realstate?retryWrites=true&w=majority")
+  .connect(
+    "mongodb+srv://saranga:saranga@mern-realstate.r6v7v44.mongodb.net/mern-realstate?retryWrites=true&w=majority"
+  )
   .then(() => {
     console.log("Connected to MongoDB");
   })
@@ -23,5 +25,15 @@ app.listen(3000, () => {
   console.log("Server running on port 3000");
 });
 
-app.use('/backend/user', userRouter);
-app.use('/backend/auth', authRouter);
+app.use("/backend/user", userRouter);
+app.use("/backend/auth", authRouter);
+
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
+  return res.status(statusCode).json({
+    type: "error",
+    statusCode,
+    message,
+  });
+});
